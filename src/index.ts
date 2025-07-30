@@ -1,19 +1,23 @@
-import { convQueueManager } from "./convQueueManager.mjs";
-import { EventSender } from "./eventSender.js";
+import { convQueueManager, ConversionTask, MediaConverterOptions } from "./convQueueManager.mjs";
 
-const eventSender = new EventSender("http://api.example.com");
-const convManager = new convQueueManager(eventSender);
+export default class MediaConverter {
+	
+    converter: convQueueManager;
 
-// convManager.addToQueue({
-//   dir: './uploads',
-//   inputFile: 'song.mp3',
-//   codec: 'libmp3lame',
-//   audioBitrate: 320
-// });
-
-convManager.addToQueue({
-    dir: "./uploads",
-    inputFile: "1.mp4",
-    codec: "h264_nvenc",
-    audioBitrate: 1000,
-});
+	constructor (options: MediaConverterOptions) {
+		this.converter = new convQueueManager(options);
+    }
+	
+	convert (options: ConversionTask) {
+		
+		if (!options.inputFile) {
+			return false;
+		}
+		
+		this.converter.addToQueue(options);
+	}
+	
+	version () {
+		return 'v1.0.0';
+	}
+}
